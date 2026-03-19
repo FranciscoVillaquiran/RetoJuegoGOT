@@ -1,0 +1,31 @@
+{
+"personajes": [
+  {"nombre":"Stark 0","vida":150,"vidaMax":150,"tipo":"JineteDeDragones","casa":"Stark"},
+  {"nombre":"Stark 1","vida":150,"vidaMax":150,"tipo":"JineteDeDragones","casa":"Stark"},
+  {"nombre":"Stark 2","vida":150,"vidaMax":150,"tipo":"JineteDeDragones","casa":"Stark"},
+  {"nombre":"Stark 3","vida":80,"vidaMax":80,"tipo":"Arquero","casa":"Stark"},
+  {"nombre":"Stark 4","vida":80,"vidaMax":80,"tipo":"Arquero","casa":"Stark"},
+  {"nombre":"Targaryen 0","vida":80,"vidaMax":80,"tipo":"Curandero","casa":"Targaryen"},
+  {"nombre":"Targaryen 1","vida":80,"vidaMax":80,"tipo":"Curandero","casa":"Targaryen"},
+  {"nombre":"Targaryen 2","vida":80,"vidaMax":80,"tipo":"Arquero","casa":"Targaryen"},
+  {"nombre":"Targaryen 3","vida":80,"vidaMax":80,"tipo":"Arquero","casa":"Targaryen"},
+  {"nombre":"Targaryen 4","vida":80,"vidaMax":80,"tipo":"Curandero","casa":"Targaryen"}
+],
+"eventos": [
+  {"tipo":"ataque","actor":"Stark 0","objetivo":"Targaryen 3","valor":75},
+  {"tipo":"ataque","actor":"Stark 1","objetivo":"Targaryen 1","valor":75},
+  {"tipo":"ataque","actor":"Stark 2","objetivo":"Targaryen 0","valor":75},
+  {"tipo":"ataque","actor":"Stark 3","objetivo":"Targaryen 1","valor":17},
+  {"tipo":"ataque","actor":"Stark 4","objetivo":"Targaryen 0","valor":16},
+  {"tipo":"ataque","actor":"Targaryen 2","objetivo":"Stark 3","valor":23},
+  {"tipo":"ataque","actor":"Targaryen 3","objetivo":"Stark 1","valor":17},
+  {"tipo":"cura","actor":"Targaryen 4","objetivo":"Targaryen 3","valor":20},
+  {"tipo":"ataque","actor":"Stark 0","objetivo":"Targaryen 2","valor":75},
+  {"tipo":"ataque","actor":"Stark 1","objetivo":"Targaryen 2","valor":75},
+  {"tipo":"ataque","actor":"Stark 2","objetivo":"Targaryen 3","valor":75},
+  {"tipo":"ataque","actor":"Stark 3","objetivo":"Targaryen 4","valor":16},
+  {"tipo":"ataque","actor":"Stark 4","objetivo":"Targaryen 4","valor":22},
+  {"tipo":"cura","actor":"Targaryen 4","objetivo":"Targaryen 4","valor":20},
+  {"tipo":"ataque","actor":"Stark 0","objetivo":"Targaryen 4","valor":75}
+]
+}

@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>⚔️ Guerra de los Dos Reyes</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: 'Seoge UI', sans-serif;
+    color: white;
+    text-align: center;
+    background: url("img/fondo.jpg")
+    no-repeat center center fixed;
+    background-size: cover;
+}
+
+#contenedor {
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-start;
+    margin-top: 20px;
+}
+
+/* COLUMNAS */
+.columna {
+    width: 25%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.columna h2{
+    color: gold;
+    text-shadow: 0 0 10px gold;
+}
+
+.golpeado {
+    box-shadow: 0 0 20px red;
+    transform: scale(1.1);
+    transition: 0.2s;
+}
+
+.curado {
+    box-shadow: 0 0 20px lime;
+    transform: scale(1.1);
+    transition: 0.2s;
+}
+
+
+h1 {
+    color: gold;
+    text-shadow: 0 0 10px gold;
+}
+
+
+/* PERSONAJE */
+.personaje {
+    background: rgba(30, 30, 30, 0, 85);
+    border: 2px solid gold;
+    border-radius: 15px;
+    padding: 10px;
+    width: 150px;
+
+    box-shadow: 0 0 10px black;
+    transition: transform 0.2s;
+}
+
+.personaje:hover {
+    transform: scale(1.05);
+}
+
+.personaje img {
+    width: 80px;
+}
+
+/* BARRA VIDA */
+.barra {
+    width: 100%;
+    height: 14px;
+    background:#300;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.vida {
+    height: 100%;
+    background: limegreen;
+    width: 100%;
+    transition: width 0.4s;
+}
+
+/* LOG */
+#log {
+    width: 40%;
+    height: 300px;
+    overflow-y: auto;
+
+    background: rgba(20,20,20,0.85);
+    border: 2px solid gold;
+    border-radius: 12px;
+    padding: 10px;
+
+    box-shadow: 0 0 15px black;
+}
+
+
+/* EVENTOS */
+.evento {
+    padding: 8px;
+    margin: 5px;
+    border-radius: 8px;
+    font-weight: bold;
+    animation: aparecer 0.4s;
+}
+
+.ataque {
+    background: linear-gradient(90deg, darkred, crimson);
+ }
+.cura {
+    background: linear-gradient(90deg, darkgreen, limegreen);
+ }
+
+/* DAÑO FLOTANTE */
+.flotante {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    font-weight: bold;
+    animation: flotar 1s ease-out forwards;
+}
+
+@keyframes flotar {
+    0% { opacity: 1; top: 20px; }
+    100% { opacity: 0; top: -20px; }
+}
+@keyframes aparecer {
+    from {opacity: 0; transform: translateX(-10px);}
+    to {opacity: 1; transform: translateX(0);}
+}
+@keyframes atacarDerecha {
+    0% {transform: translateX(0);}
+    50% {transform: translateX(40px);}
+    100% {transform: translateX(0);}
+}
+@keyframes atacarIzquierda{
+    0% {transform: translateX(0);}
+    50%{transform: translateX(-40px);}
+    100%{transform: translateX(0);}
+}
+</style>
+</head>
+
+<body>
+
+<h1>⚔️ Guerra de los Dos Reyes ⚔️</h1>
+
+<button onclick="iniciar()">Iniciar Batalla</button>
+
+<div id="contenedor">
+
+    <div id="casa1" class="columna">
+        <h2>Stark</h2>
+    </div>
+
+    <div id="log"></div>
+
+    <div id="casa2" class="columna">
+        <h2>Targaryen</h2>
+    </div>
+
+</div>
+
+
+<script>
+let eventos = [];
+let personajes = {};
+let index = 0;
+
+// ICONOS por tipo
+function getImagen(tipo) {
+    return "img/" + tipo + ".png";
+}
+
+// CREAR PERSONAJE
+function crearPersonaje(p) {
+
+    personajes[p.nombre] = {
+        vida: p.vida,
+        max: p.vida
+    };
+
+    let div = document.createElement("div");
+    div.classList.add("personaje");
+    div.id = p.nombre;
+
+    div.innerHTML = `
+        <img src="${getImagen(p.tipo)}">
+        <p>${p.nombre}</p>
+        <small>${p.tipo}</small>
+        <div class="barra">
+            <div class="vida" id="vida-${p.nombre}"></div>
+        </div>
+    `;
+
+    if (p.casa === "Stark") {
+        document.getElementById("casa1").appendChild(div);
+    } else {
+        document.getElementById("casa2").appendChild(div);
+    }
+}
+
+// ACTUALIZAR VIDA
+function actualizarVida(nombre, cambio) {
+
+    let p = personajes[nombre];
+    p.vida -= cambio;
+
+    if (p.vida > p.max) p.vida = p.max;
+    if (p.vida === 0) {
+        document.getElementById(nombre).style.opacity = "0.3";
+        el.style.filter = "grayscale(100%)";
+    }
+    if (p.vida < 0) p.vida = 0;
+
+    let porcentaje = (p.vida / p.max) * 100;
+    document.getElementById("vida-" + nombre).style.width = porcentaje + "%";
+}
+
+// DAÑO FLOTANTE
+function mostrarFlotante(nombre, valor, tipo) {
+
+    let div = document.createElement("div");
+    div.classList.add("flotante");
+
+    div.style.color = (tipo === "ataque") ? "red" : "lime";
+    div.innerText = (tipo === "ataque") ? "-" + valor : "+" + valor;
+
+    document.getElementById(nombre).appendChild(div);
+
+    setTimeout(() => div.remove(), 1000);
+}
+
+// INICIAR
+function iniciar() {
+    personajes = {};
+    fetch("batalla.json")
+    .then(res => res.json())
+    .then(data => {
+
+        eventos = data.eventos;
+
+        document.getElementById("casa1").innerHTML = "<h2>Stark</h2>";
+        document.getElementById("casa2").innerHTML = "<h2>Targaryen</h2>";
+
+        data.personajes.forEach(crearPersonaje);
+
+        index = 0;
+        document.getElementById("log").innerHTML = "";
+
+        reproducir();
+    });
+}
+
+// REPRODUCIR
+function reproducir() {
+    if (index >= eventos.length) return;
+
+    let e = eventos[index];
+
+    let div = document.createElement("div");
+    div.classList.add("evento", e.tipo);
+
+    if (e.tipo === "ataque") {
+        div.innerText = `⚔️ ${e.actor} → ${e.objetivo} (-${e.valor})`;
+        actualizarVida(e.objetivo, e.valor);
+        mostrarFlotante(e.objetivo, e.valor, "ataque");
+        animarAtaque(e.actor, e.objetivo);
+        resaltarObjetivo(e.objetivo, "ataque")
+    } else {
+        div.innerText = `✨ ${e.actor} → ${e.objetivo} (+${e.valor})`;
+        actualizarVida(e.objetivo, -e.valor);
+        mostrarFlotante(e.objetivo, e.valor, "cura");
+        resaltarObjetivo(e.objetivo, "cura")
+    }
+
+    document.getElementById("log").appendChild(div);
+
+    index++;
+    setTimeout(reproducir, 700);
+
+    let log = document.getElementById("log");
+    log.scrollTop = log.scrollHeight;
+}
+
+function animarGolpe(nombre) {
+    let el = document.getElementById(nombre);
+    el.style.transform = "translateX(10px)";
+
+    setTimeout(()=>{
+        el.style.transform = "translateX(0)";
+    },150);
+}
+
+function animarAtaque(actor, objetivo) {
+
+    let elActor = document.getElementById(actor);
+    let elObjetivo = document.getElementById(objetivo);
+
+    if (!elActor || !elObjetivo) return;
+
+    let casaActor = elActor.parentElement.id;
+
+    if (casaActor === "casa1") {
+        elActor.style.animation = "atacarDerecha 0.4s";
+    } else {
+        elActor.style.animation = "atacarIzquierda 0.4s";
+    }
+
+    setTimeout(() => {
+        elActor.style.animation = "";
+    }, 400);
+}
+
+function resaltarObjetivo(nombre, tipo) {
+
+    let el = document.getElementById(nombre);
+    if (!el) return;
+
+    let clase = (tipo === "ataque") ? "golpeado" : "curado";
+
+    el.classList.add(clase);
+
+    setTimeout(() => {
+        el.classList.remove(clase);
+    }, 300);
+}
+
+
+</script>
+
+</body>
+</html>
+
